@@ -101,6 +101,6 @@ public class EagerThreadPoolExecutorTest {
         Assertions.assertTrue(
                 executorService.getClass()
                         .getSimpleName()
-                        .equals("EagerThreadPoolExecutor"), "test spi fail!");
+                        .equals("EagerThreadPoolExecutor"), "test com.sirius.duubo.spi fail!");
     }
 }
