@@ -491,6 +491,7 @@ public class ExtensionLoader<T> {
         // 从缓存中获取自适应拓展类实现
         Object instance = cachedAdaptiveInstance.get();
         if (instance == null) {
+            // 如果曾经创建自适应拓展失败，直接返回错误
             if (createAdaptiveInstanceError == null) {
                 synchronized (cachedAdaptiveInstance) {
                     instance = cachedAdaptiveInstance.get();
@@ -918,18 +919,17 @@ public class ExtensionLoader<T> {
         //通过spi加载所有的拓展类
         getExtensionClasses();
 
-        //检查缓存，若缓存不为空，则返回缓存
+        // 获取缓存
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
         }
 
-        //若缓存为空，则调用 createAdaptiveExtensionClass 创建自适应拓展类
-        //动态拼凑类，动态编译生成  创建自适应的代理类  创建自适应拓展类
+        // 创建自适应拓展类
         return cachedAdaptiveClass = createAdaptiveExtensionClass();
     }
 
     private Class<?> createAdaptiveExtensionClass() {
-        //字符串拼凑出一个类的字符串 构建自适应拓展代码
+        // 构建自适应拓展代码
         String code = new AdaptiveClassCodeGenerator(type, cachedDefaultName).generate();
         // 编译代码，并返回该类
         ClassLoader classLoader = findClassLoader();
