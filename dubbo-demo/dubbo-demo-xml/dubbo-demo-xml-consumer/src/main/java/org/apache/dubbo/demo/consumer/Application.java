@@ -20,16 +20,33 @@ import org.apache.dubbo.demo.DemoService;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Application {
     /**
      * In order to make sure multicast registry works, need to specify '-Djava.net.preferIPv4Stack=true' before
      * launch the application
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring/dubbo-consumer.xml");
         context.start();
+
         DemoService demoService = context.getBean("demoService", DemoService.class);
-        String hello = demoService.sayHello("world");
-        System.out.println("result: " + hello);
+        System.out.println(demoService);
+
+//        String hello = demoService.sayHello("world");
+//        System.out.println("result: " + hello);
+
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            try {
+                String hello = demoService.sayHello("world" + i);
+                System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "]" + hello);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Thread.sleep(2000);
+        }
     }
 }

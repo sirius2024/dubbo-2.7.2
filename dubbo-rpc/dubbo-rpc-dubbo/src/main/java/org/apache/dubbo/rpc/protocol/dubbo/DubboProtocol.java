@@ -285,6 +285,7 @@ public class DubboProtocol extends AbstractProtocol {
         // export service.
         String key = serviceKey(url);
         DubboExporter<T> exporter = new DubboExporter<T>(invoker, key, exporterMap);
+        //key:接口(DemoService)
         exporterMap.put(key, exporter);
 
         //export an stub service for dispatching event
@@ -303,6 +304,7 @@ public class DubboProtocol extends AbstractProtocol {
             }
         }
 
+        //启动
         openServer(url);
         optimizeSerialization(url);
 
@@ -320,6 +322,7 @@ public class DubboProtocol extends AbstractProtocol {
                 synchronized (this) {
                     server = serverMap.get(key);
                     if (server == null) {
+                        //进
                         serverMap.put(key, createServer(url));
                     }
                 }
@@ -346,6 +349,7 @@ public class DubboProtocol extends AbstractProtocol {
 
         ExchangeServer server;
         try {
+            //进
             server = Exchangers.bind(url, requestHandler);
         } catch (RemotingException e) {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);
@@ -404,6 +408,7 @@ public class DubboProtocol extends AbstractProtocol {
         optimizeSerialization(url);
 
         // create rpc invoker.
+        //看
         DubboInvoker<T> invoker = new DubboInvoker<T>(serviceType, url, getClients(url), invokers);
         invokers.add(invoker);
 

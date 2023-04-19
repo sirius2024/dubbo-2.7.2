@@ -19,9 +19,19 @@ package org.apache.dubbo.demo.provider;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Application {
+
     /**
-     * In order to make sure multicast registry works, need to specify '-Djava.net.preferIPv4Stack=true' before
-     * launch the application
+     * zookeeper注册中心，默认dubbo协议，底层借助netty
+     * 1、服务暴露接口
+     *   -->ServiceBean#onApplicationEvent方法
+     *           -->doExport方法->doExportUrls方法
+     * 2、暴露本地服务
+     *      ServiceConfig#exportLocal
+     * 3、暴露远程服务
+     *
+     * 4、开启netty服务
+     *      DubboProtocol#export
+     * 5、服务注册
      */
     public static void main(String[] args) throws Exception {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring/dubbo-provider.xml");

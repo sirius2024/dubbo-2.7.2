@@ -53,6 +53,7 @@ public class Transporters {
         } else {
             handler = new ChannelHandlerDispatcher(handlers);
         }
+        //进bind NettyTransporter.bind
         return getTransporter().bind(url, handler);
     }
 
