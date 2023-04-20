@@ -34,9 +34,13 @@
             <artifactId>dubbo-demo-interface</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-registry-multicast</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-zookeeper</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -53,6 +57,13 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-hessian2</artifactId>
+        </dependency>
+
+
+        <!-- 采用zk -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-configcenter-zookeeper</artifactId>
         </dependency>
     </dependencies>
 </project>
