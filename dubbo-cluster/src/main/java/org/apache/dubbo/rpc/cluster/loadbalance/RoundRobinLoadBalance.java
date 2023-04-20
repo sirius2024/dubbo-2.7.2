@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * 加权轮询负载均衡
  * Round robin load balance.
  */
 public class RoundRobinLoadBalance extends AbstractLoadBalance {
@@ -39,8 +40,11 @@ public class RoundRobinLoadBalance extends AbstractLoadBalance {
     private static final int RECYCLE_PERIOD = 60000;
     
     protected static class WeightedRoundRobin {
+        //服务提供者权重
         private int weight;
+        //当前计算权重
         private AtomicLong current = new AtomicLong(0);
+        //最后更新时间
         private long lastUpdate;
         public int getWeight() {
             return weight;
@@ -111,15 +115,19 @@ public class RoundRobinLoadBalance extends AbstractLoadBalance {
                 //weight changed
                 weightedRoundRobin.setWeight(weight);
             }
+
+            //当前权重加1
             long cur = weightedRoundRobin.increaseCurrent();
             weightedRoundRobin.setLastUpdate(now);
             if (cur > maxCurrent) {
                 maxCurrent = cur;
-                selectedInvoker = invoker;
+                selectedInvoker = invoker;//选中的提供者
                 selectedWRR = weightedRoundRobin;
             }
             totalWeight += weight;
         }
+
+        //踢出失效机器
         if (!updateLock.get() && invokers.size() != map.size()) {
             if (updateLock.compareAndSet(false, true)) {
                 try {
