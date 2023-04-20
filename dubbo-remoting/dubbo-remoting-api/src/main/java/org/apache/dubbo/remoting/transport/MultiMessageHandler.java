@@ -40,6 +40,7 @@ public class MultiMessageHandler extends AbstractChannelHandlerDelegate {
                 handler.received(channel, obj);
             }
         } else {
+            //org.apache.dubbo.remoting.exchange.support.header.HeartbeatHandler.received
             handler.received(channel, message);
         }
     }

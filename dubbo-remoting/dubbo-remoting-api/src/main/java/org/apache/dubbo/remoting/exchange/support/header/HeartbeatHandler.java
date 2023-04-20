@@ -85,6 +85,7 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate {
             }
             return;
         }
+        //org.apache.dubbo.remoting.transport.dispatcher.all.AllChannelHandler.received
         handler.received(channel, message);
     }
 

@@ -66,6 +66,7 @@ public class ExchangeCodec extends TelnetCodec {
     @Override
     public void encode(Channel channel, ChannelBuffer buffer, Object msg) throws IOException {
         if (msg instanceof Request) {
+            //进
             encodeRequest(channel, buffer, (Request) msg);
         } else if (msg instanceof Response) {
             encodeResponse(channel, buffer, (Response) msg);
@@ -76,15 +77,17 @@ public class ExchangeCodec extends TelnetCodec {
 
     @Override
     public Object decode(Channel channel, ChannelBuffer buffer) throws IOException {
+        //请求到此
         int readable = buffer.readableBytes();
         byte[] header = new byte[Math.min(readable, HEADER_LENGTH)];
         buffer.readBytes(header);
+        //解码
         return decode(channel, buffer, readable, header);
     }
 
     @Override
     protected Object decode(Channel channel, ChannelBuffer buffer, int readable, byte[] header) throws IOException {
-        // check magic number.
+        // check magic number. 检查魔法数字
         if (readable > 0 && header[0] != MAGIC_HIGH
                 || readable > 1 && header[1] != MAGIC_LOW) {
             int length = header.length;
@@ -101,13 +104,17 @@ public class ExchangeCodec extends TelnetCodec {
             }
             return super.decode(channel, buffer, readable, header);
         }
+
         // check length.
+        //头长度
         if (readable < HEADER_LENGTH) {
             return DecodeResult.NEED_MORE_INPUT;
         }
 
         // get data length.
+        //12个长度
         int len = Bytes.bytes2int(header, 12);
+        //请求长度
         checkPayload(channel, len);
 
         int tt = len + HEADER_LENGTH;
@@ -119,6 +126,7 @@ public class ExchangeCodec extends TelnetCodec {
         ChannelBufferInputStream is = new ChannelBufferInputStream(buffer, len);
 
         try {
+            //数据体的解析
             return decodeBody(channel, is, header);
         } finally {
             if (is.available() > 0) {
@@ -138,7 +146,7 @@ public class ExchangeCodec extends TelnetCodec {
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
         // get request id.
         long id = Bytes.bytes2long(header, 4);
-        if ((flag & FLAG_REQUEST) == 0) {
+        if ((flag & FLAG_REQUEST) == 0) {//响应body
             // decode response.
             Response res = new Response(id);
             if ((flag & FLAG_EVENT) != 0) {
@@ -167,7 +175,7 @@ public class ExchangeCodec extends TelnetCodec {
                 res.setErrorMessage(StringUtils.toString(t));
             }
             return res;
-        } else {
+        } else {//请求body
             // decode request.
             Request req = new Request(id);
             req.setVersion(Version.getProtocolVersion());
@@ -185,6 +193,7 @@ public class ExchangeCodec extends TelnetCodec {
                 } else {
                     data = decodeRequestData(channel, in);
                 }
+                //传输的数据
                 req.setData(data);
             } catch (Throwable t) {
                 // bad request
@@ -210,14 +219,16 @@ public class ExchangeCodec extends TelnetCodec {
     protected void encodeRequest(Channel channel, ChannelBuffer buffer, Request req) throws IOException {
         //获取序列化实现方式
         Serialization serialization = getSerialization(channel);
-        // header.
+        // header. 16字节   dubbo协议
         byte[] header = new byte[HEADER_LENGTH];
-        // set magic number.
+        // set magic number. 魔法数字
         Bytes.short2bytes(MAGIC, header);
 
         // set request and serialization flag.
+        //
         header[2] = (byte) (FLAG_REQUEST | serialization.getContentTypeId());
 
+        //双向数据传输
         if (req.isTwoWay()) {
             header[2] |= FLAG_TWOWAY;
         }
@@ -226,9 +237,11 @@ public class ExchangeCodec extends TelnetCodec {
         }
 
         // set request id.
+        //请求id
         Bytes.long2bytes(req.getId(), header, 4);
 
         // encode request data.
+        //传输数据  12字节位置
         int savedWriteIndex = buffer.writerIndex();
         buffer.writerIndex(savedWriteIndex + HEADER_LENGTH);
         ChannelBufferOutputStream bos = new ChannelBufferOutputStream(buffer);
@@ -247,6 +260,7 @@ public class ExchangeCodec extends TelnetCodec {
         bos.close();
         int len = bos.writtenBytes();
         checkPayload(channel, len);
+        //写入12位置
         Bytes.int2bytes(len, header, 12);
 
         // write

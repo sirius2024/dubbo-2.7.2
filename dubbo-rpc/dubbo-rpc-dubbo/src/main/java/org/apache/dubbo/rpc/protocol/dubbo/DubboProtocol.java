@@ -149,6 +149,7 @@ public class DubboProtocol extends AbstractProtocol {
                 }
             }
             RpcContext.getContext().setRemoteAddress(channel.getRemoteAddress());
+            //org.apache.dubbo.rpc.proxy.AbstractProxyInvoker.invoke
             Result result = invoker.invoke(inv);
             return result.completionFuture().thenApply(Function.identity());
         }

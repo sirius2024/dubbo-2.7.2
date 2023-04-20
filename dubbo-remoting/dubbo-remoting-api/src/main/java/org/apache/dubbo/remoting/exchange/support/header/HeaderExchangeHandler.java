@@ -99,6 +99,8 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
         // find handler by message class.
         Object msg = req.getData();
         try {
+            //发起调用DubboProtocol
+            //org.apache.dubbo.remoting.exchange.support.ExchangeHandlerAdapter.reply
             CompletionStage<Object> future = handler.reply(channel, msg);
             future.whenComplete((appResult, t) -> {
                 try {
@@ -189,6 +191,7 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
                 if (request.isEvent()) {
                     handlerEvent(channel, request);
                 } else {
+                    //是否双向数据
                     if (request.isTwoWay()) {
                         handleRequest(exchangeChannel, request);
                     } else {

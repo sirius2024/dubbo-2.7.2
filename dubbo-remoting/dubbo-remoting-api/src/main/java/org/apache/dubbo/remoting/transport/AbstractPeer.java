@@ -144,6 +144,7 @@ public abstract class AbstractPeer implements Endpoint, ChannelHandler {
         if (closed) {
             return;
         }
+        //org.apache.dubbo.remoting.transport.MultiMessageHandler.received
         handler.received(ch, msg);
     }
 
