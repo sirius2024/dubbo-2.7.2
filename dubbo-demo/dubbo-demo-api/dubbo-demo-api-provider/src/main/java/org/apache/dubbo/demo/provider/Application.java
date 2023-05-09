@@ -18,10 +18,7 @@
  */
 package org.apache.dubbo.demo.provider;
 
-import org.apache.dubbo.config.ApplicationConfig;
-import org.apache.dubbo.config.ProtocolConfig;
-import org.apache.dubbo.config.RegistryConfig;
-import org.apache.dubbo.config.ServiceConfig;
+import org.apache.dubbo.config.*;
 import org.apache.dubbo.demo.DemoService;
 
 public class Application {
@@ -47,6 +44,9 @@ public class Application {
         ApplicationConfig application = new ApplicationConfig();
         application.setName("xxx");
 
+        ConfigCenterConfig configCenterConfig = new ConfigCenterConfig();
+        configCenterConfig.setAddress("zookeeper://zookeeper.sirius.com:32181");
+
         //连接注册中心
         RegistryConfig registry = new RegistryConfig();
         registry.setAddress("zookeeper://zookeeper.sirius.com:32181");
@@ -62,13 +62,15 @@ public class Application {
         // 服务提供者暴露服务配置
         ServiceConfig<DemoService> service = new ServiceConfig<DemoService>(); // 此实例很重，封装了与注册中心的连接，请自行缓存，否则可能造成内存和连接泄漏
         service.setApplication(application);
+        service.setConfigCenter(configCenterConfig);
         service.setRegistry(registry); // 多个注册中心可以用setRegistries()
         service.setProtocol(protocol); // 多个协议可以用setProtocols()
         service.setInterface(DemoService.class);
         service.setRef(demoService);
         service.setVersion("1.0.0");
 
-// 暴露及注册服务
+        // 暴露及注册服务
         service.export();
+        System.in.read();
     }
 }

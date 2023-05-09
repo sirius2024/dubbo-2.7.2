@@ -61,7 +61,7 @@ public class ConfigCenterConfig extends AbstractConfig {
     private String group = CommonConstants.DUBBO;
     private String username;
     private String password;
-    private Long timeout = 3000L;
+    private Long timeout = 10000L;
 
     // If the Config Center is given the highest priority, it will override all the other configurations
     private Boolean highestPriority = true;
