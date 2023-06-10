@@ -34,7 +34,7 @@
         <module>dubbo-demo-xml</module>
         <module>dubbo-demo-annotation</module>
         <module>dubbo-demo-api</module>
-        <module>dubbo-demo-com.sirius.duubo.spi</module>
+        <module>dubbo-demo-spi</module>
     </modules>
 
     <dependencyManagement>
